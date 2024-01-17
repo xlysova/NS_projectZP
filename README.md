@@ -6,7 +6,7 @@ This project focuses on building and training a neural network using Python. It'
 ## Setup and Installation
 
 ### Requirements
-- Python 3.7 or later
+- Python 3.9 or later
 - Virtual environment (recommended)
 
 ### Installation Steps
@@ -18,6 +18,8 @@ git clone https://github.com/xlysova/NS_projectZP.git
   ```
   python -m venv myenv
   myenv\Scripts\activate
+  # if it doesn't work, do this command in powershell
+  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
   ```
 - **Unix/MacOS:**
   ```
@@ -37,7 +39,6 @@ pip install -r requirements.txt
 - `evaluate.py` - For evaluating the model's performance.
 - `utils.py` - Contains utility functions used across the project.
 - `/data` - Directory for storing datasets.
-- `/notebooks` - Jupyter notebooks for experimentation (optional).
 
 ## Usage
 
