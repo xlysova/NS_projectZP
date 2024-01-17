@@ -29,5 +29,32 @@ final_df = exploded_genres[['sid', 'title', 'genre', 'overview']]
 # Drop duplicates if necessary
 final_df.drop_duplicates(inplace=True)
 
+# Get unique genres and create a mapping from genre to genre_id
+unique_genres = final_df['genre'].unique()
+genre_to_id = {genre: idx + 1 for idx, genre in enumerate(unique_genres)}
+
+# Add the 'genre_id' column using the mapping
+final_df['genre_id'] = final_df['genre'].map(genre_to_id)
+
 # Display the result
-print(final_df)
+# print(final_df)
+print(final_df[['sid', 'title', 'genre', 'genre_id']].head(20))
+
+# %%
+import nltk # Natural Language Toolkit 
+nltk.download('stopwords') 
+from nltk.corpus import stopwords
+
+# Remove stop words
+def remove_stop_words(overview):
+    overview_minus_sw = []
+    stop_words = stopwords.words('english')
+    overview = overview.split()
+    final_overview = [overview_minus_sw.append(word) for word in overview if word not in stop_words]            
+    final_overview = ' '.join(overview_minus_sw)
+    return final_overview   
+
+#%%
+final_df['overview'] = final_df['overview'].apply(remove_stop_words)
+
+# %%
