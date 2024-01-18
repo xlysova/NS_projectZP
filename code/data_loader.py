@@ -50,9 +50,11 @@ class DataLoader:
     def analyze_action_genre(self):
         action_df = self.final_df.copy()
         action_df['is_action'] = action_df['genre_id'] == 1
-        action_df = action_df.groupby('sid', as_index=False).agg({'sid': 'first', 'is_action': 'any'})
+        action_df = action_df.groupby('sid', as_index=False).agg({'overview': 'first', 'sid': 'first', 'is_action': 'any'})
         action_df['is_action'] = action_df['is_action'].astype(int)
         self.action_df = action_df
+
+
 
     def get_final_df(self):
         return self.final_df

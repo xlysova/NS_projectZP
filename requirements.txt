@@ -3,5 +3,5 @@ pandas
 matplotlib
 scikit-learn
 nltk
-# tensorflow
+tensorflow
 # pytorch
