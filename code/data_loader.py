@@ -1,5 +1,6 @@
 #%%
 import pandas as pd
+import ast
 
 movies_df = pd.read_csv('data/movies.csv')
 # Convert the 'genres' column to a list of dictionaries if it's a string representation
@@ -8,8 +9,6 @@ movies_df['genres'] = movies_df['genres'].apply(ast.literal_eval)
 movies_df['sid'] = range(len(movies_df))
 
 #%%
-import pandas as pd
-import ast  # To safely evaluate strings containing Python expressions
 
 # Assuming movies_df is your original DataFrame
 # Example: movies_df = pd.read_csv('your_dataset.csv')
@@ -56,5 +55,35 @@ def remove_stop_words(overview):
 
 #%%
 final_df['overview'] = final_df['overview'].apply(remove_stop_words)
+
+# %%
+
+
+# Assuming 'genre' is the column containing genres in final_df
+genre_counts = final_df['genre'].value_counts()
+
+# Convert the Series to a DataFrame
+genre_counts_df = genre_counts.reset_index()
+genre_counts_df.columns = ['Genre', 'Count']
+
+# Display the DataFrame
+print(genre_counts_df)
+
+
+# %%
+# Assuming df is your original DataFrame
+# ... (your DataFrame creation code)
+
+# Create a new column 'is_action'
+action_df = final_df.copy()
+
+action_df['is_action'] = action_df['genre_id'] == 1
+
+# Group by 'sid' and aggregate the 'is_action' column using the 'any' function
+action_df = action_df.groupby('sid', as_index=False).agg({'sid': 'first', 'is_action': 'any'})
+
+action_df['is_action'] = action_df['is_action'].astype(int)
+# Display the final DataFrame
+print(action_df)
 
 # %%
