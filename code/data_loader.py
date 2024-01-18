@@ -37,7 +37,7 @@ class DataLoader:
     def remove_stop_words(overview):
         overview_minus_sw = []
         stop_words = stopwords.words('english')
-        overview = overview.split()
+        overview = overview.lower().split()
         final_overview = [overview_minus_sw.append(word) for word in overview if word not in stop_words]            
         final_overview = ' '.join(overview_minus_sw)
         return final_overview
@@ -53,7 +53,7 @@ class DataLoader:
         action_df = action_df.groupby('sid', as_index=False).agg({'overview': 'first', 'sid': 'first', 'is_action': 'any'})
         action_df['is_action'] = action_df['is_action'].astype(int)
         self.action_df = action_df
-
+        self.action_df['overview'] = self.action_df['overview'].apply(self.remove_stop_words)
 
 
     def get_final_df(self):
