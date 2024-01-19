@@ -1,12 +1,13 @@
 #%%
-from data_loader_v2 import DataLoader2
+from data_loader_v3 import DataLoader3
 from sklearn.model_selection import train_test_split 
 from numpy import array
 import tensorflow as tf
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.utils import to_categorical
 
-data_loader = DataLoader2('data/imdb_movies.csv')
+data_loader = DataLoader3('data/imdb_movies.csv')
 data_loader.load_data()
 data_loader.process_data()
 data_loader.analyze_genre_counts()
@@ -15,13 +16,16 @@ data_loader.analyze_action_genre()
 final_df = data_loader.get_final_df()
 genre_counts_df = data_loader.get_genre_counts_df()
 action_df = data_loader.get_action_df()
+#action_df = action_df[~action_df['genre'].isin(['Animation', 'TV Movie', 'Family'])]
 print(action_df)
 
 # %%
 X = action_df['overview']
-y = array(action_df['is_action'])
+y = array(action_df['genre_id'])
 
-X_train, X_test , y_train, y_test = train_test_split(X, y , test_size = 0.30)
+unique_genres = action_df['genre_id'].unique()
+y = to_categorical(y, num_classes=len(unique_genres))
+X_train, X_test , y_train, y_test = train_test_split(X, y , test_size = 0.10)
 
 # %%
 oov_token = "<OOV>"
@@ -82,12 +86,12 @@ vocab_size = len(tokenizer.word_index) + 1
 # vocab_size = 5000
 model = Sequential([
     Embedding(vocab_size, 64, input_length=max_length),
-    Bidirectional(LSTM(32, return_sequences=True)),
-    Bidirectional(LSTM(32,)),
-    Dense(5, activation='relu'),
-    Dense(1, activation='sigmoid')])
+    Bidirectional(LSTM(16, return_sequences=True)),
+    Bidirectional(LSTM(16)),
+    Dense(len(unique_genres), activation='softmax')  # number_of_genres should be set to the unique count of genres
+])
 
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
 history = model.fit(training_data, epochs=epochs, verbose=1,validation_data = validation_data, callbacks = [callback])
 
 # %%

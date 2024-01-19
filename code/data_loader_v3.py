@@ -28,9 +28,9 @@ class DataLoader3:
         exploded_genres.dropna(subset=['genre'], inplace=True)
         self.final_df = exploded_genres[['names', 'sid', 'overview', 'genre']]
         self.final_df.drop_duplicates(inplace=True)
-
+        self.final_df = self.final_df[~self.final_df['genre'].isin(['Animation', 'TV Movie', 'Family'])]
         unique_genres = self.final_df['genre'].unique()  # Changed line
-        genre_to_id = {genre: idx + 1 for idx, genre in enumerate(unique_genres)}
+        genre_to_id = {genre: idx for idx, genre in enumerate(unique_genres)}
         self.final_df['genre_id'] = self.final_df['genre'].map(genre_to_id)  # Changed line
 
         self.final_df['overview'] = self.final_df['overview'].apply(self.remove_stop_words)
@@ -67,7 +67,8 @@ class DataLoader3:
 
 #%%
 # 
-# Usage
+# Usage)
+#'''
 data_loader = DataLoader3('data/imdb_movies.csv')
 data_loader.load_data()
 data_loader.process_data()
@@ -79,5 +80,5 @@ genre_counts_df = data_loader.get_genre_counts_df()
 action_df = data_loader.get_action_df()
 print(action_df)
 # Now you can use final_df, genre_counts_df, and action_df as needed.
-
+#'''
 # %%
