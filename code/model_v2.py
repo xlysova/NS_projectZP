@@ -1,12 +1,12 @@
 #%%
-from data_loader import DataLoader
+from data_loader_v2 import DataLoader2
 from sklearn.model_selection import train_test_split 
 from numpy import array
 import tensorflow as tf
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
-data_loader = DataLoader('data/movies.csv')
+data_loader = DataLoader2('data/imdb_movies.csv')
 data_loader.load_data()
 data_loader.process_data()
 data_loader.analyze_genre_counts()
@@ -62,7 +62,7 @@ training_data = tf.data.Dataset.from_tensor_slices((X_train_padded, y_train))
 validation_data = tf.data.Dataset.from_tensor_slices((X_test_padded, y_test))
 
 # %%
-batch_size = 32
+batch_size = 64
 training_data = training_data.batch(batch_size)
 validation_data = validation_data.batch(batch_size)
 
@@ -70,7 +70,7 @@ validation_data = validation_data.batch(batch_size)
 callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
 
 # %%
-epochs = 3
+epochs = 5
 
 #%%
 from tensorflow.keras.models import Sequential
@@ -82,8 +82,8 @@ vocab_size = len(tokenizer.word_index) + 1
 # vocab_size = 5000
 model = Sequential([
     Embedding(vocab_size, 64, input_length=max_length),
-    Bidirectional(LSTM(64, return_sequences=True)),
-    Bidirectional(LSTM(64,)),
+    Bidirectional(LSTM(32, return_sequences=True)),
+    Bidirectional(LSTM(32,)),
     Dense(5, activation='relu'),
     Dense(1, activation='sigmoid')])
 
