@@ -11,19 +11,20 @@ data_loader = DataLoader3('data/imdb_movies.csv')
 data_loader.load_data()
 data_loader.process_data()
 data_loader.analyze_genre_counts()
-data_loader.analyze_action_genre()
 
 final_df = data_loader.get_final_df()
 genre_counts_df = data_loader.get_genre_counts_df()
-action_df = data_loader.get_action_df()
 #action_df = action_df[~action_df['genre'].isin(['Animation', 'TV Movie', 'Family'])]
-print(action_df)
+print(final_df)
+
+#%%
+# action_df.to_csv('final_data.csv', index=False)
 
 # %%
-X = action_df['overview']
-y = array(action_df['genre_id'])
+X = final_df['overview']
+y = array(final_df['genre_id'])
 
-unique_genres = action_df['genre_id'].unique()
+unique_genres = final_df['genre_id'].unique()
 y = to_categorical(y, num_classes=len(unique_genres))
 X_train, X_test , y_train, y_test = train_test_split(X, y , test_size = 0.10)
 
@@ -66,7 +67,7 @@ training_data = tf.data.Dataset.from_tensor_slices((X_train_padded, y_train))
 validation_data = tf.data.Dataset.from_tensor_slices((X_test_padded, y_test))
 
 # %%
-batch_size = 64
+batch_size = 32
 training_data = training_data.batch(batch_size)
 validation_data = validation_data.batch(batch_size)
 
@@ -74,7 +75,7 @@ validation_data = validation_data.batch(batch_size)
 callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
 
 # %%
-epochs = 5
+epochs = 8
 
 #%%
 from tensorflow.keras.models import Sequential
@@ -86,8 +87,8 @@ vocab_size = len(tokenizer.word_index) + 1
 # vocab_size = 5000
 model = Sequential([
     Embedding(vocab_size, 64, input_length=max_length),
-    Bidirectional(LSTM(16, return_sequences=True)),
-    Bidirectional(LSTM(16)),
+    Bidirectional(LSTM(32, return_sequences=True)),
+    Bidirectional(LSTM(32)),
     Dense(len(unique_genres), activation='softmax')  # number_of_genres should be set to the unique count of genres
 ])
 
