@@ -4,4 +4,5 @@ matplotlib
 scikit-learn
 nltk
 tensorflow
-# pytorch
+wordcloud
+collections

@@ -12,7 +12,7 @@ class DataLoader3:
         self.final_df = None
         self.genre_counts_df = None
         self.all_genre_counts_df = None
-        # self.action_df = None
+        self.horror_df = None
 
         nltk.download('stopwords')
 
@@ -58,7 +58,7 @@ class DataLoader3:
         stop_words.extend(other_stop_words)
         # print(stop_words)
         overview = overview.lower().split()
-        final_overview = [overview_minus_sw.append(word) for word in overview if word not in stop_words]
+        final_overview = [overview_minus_sw.append(word) for word in overview if word not in stop_words and not word.isdigit()]
         final_overview = ' '.join(overview_minus_sw)
         return final_overview
 
@@ -73,6 +73,14 @@ class DataLoader3:
         self.all_genre_counts_df.columns = ['Genre', 'Count']
         return self.all_genre_counts_df
 
+    def analyze_chosen_genre(self):
+        horror_df = self.final_df.copy()
+        horror_df['is_horror'] = horror_df['genre'] == 'Horror'  # Changed line
+        horror_df = horror_df.groupby('sid', as_index=False).agg({'overview': 'first', 'sid': 'first', 'names': 'first', 'is_horror': 'any'})
+        horror_df['is_horror'] = horror_df['is_horror'].astype(int)
+        self.horror_df = horror_df
+        self.horror_df['overview'] = self.horror_df['overview'].apply(self.remove_stop_words)
+
     def get_final_df(self):
         return self.final_df
     
@@ -84,6 +92,9 @@ class DataLoader3:
     
     def get_all_genre_counts_df(self):
         return self.all_genre_counts_df
+    
+    def get_horror_df(self):
+        return self.horror_df
 #%%
 
 # Usage)
@@ -97,8 +108,9 @@ original_df = data_loader.get_original_df()
 
 genre_counts = data_loader.get_genre_counts_df()
 all_genre_counts = data_loader.get_all_genre_counts_df()
-# action_df = data_loader.get_action_df()
-print(final_df)
+data_loader.analyze_chosen_genre()
+horror_df = data_loader.get_horror_df()
+print(print(horror_df[horror_df['is_horror'] == 1]))
 # Now you can use final_df, genre_counts_df, and action_df as needed.
 
 # %%
