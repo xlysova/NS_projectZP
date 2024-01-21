@@ -44,3 +44,8 @@ pip install -r requirements.txt
 
 Run the project using:
 python main.py
+
+
+if wordcloud is not working, try this
+pip install --upgrade pip
+pip install --upgrade Pillow
