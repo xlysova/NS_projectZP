@@ -6,3 +6,4 @@ nltk
 tensorflow
 wordcloud
 collections
+seaborn

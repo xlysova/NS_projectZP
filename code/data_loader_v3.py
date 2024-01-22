@@ -98,7 +98,7 @@ class DataLoader3:
 #%%
 
 # Usage)
-
+'''
 data_loader = DataLoader3('data/imdb_movies.csv')
 data_loader.load_data()
 data_loader.process_data()
@@ -112,5 +112,5 @@ data_loader.analyze_chosen_genre()
 horror_df = data_loader.get_horror_df()
 print(print(horror_df[horror_df['is_horror'] == 1]))
 # Now you can use final_df, genre_counts_df, and action_df as needed.
-
+'''
 # %%

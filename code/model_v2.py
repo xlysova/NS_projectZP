@@ -28,12 +28,12 @@ final_df.reset_index(inplace=True, drop=True)
 X_train, X_test , y_train, y_test = train_test_split(X, y , test_size = 0.30)
 
 #%%
-# from sklearn.utils import class_weight
-# import numpy as np
+from sklearn.utils import class_weight
+import numpy as np
 
-# class_weights = class_weight.compute_class_weight('balanced', classes=np.unique(y_train), y=y_train)
-# class_weights_dict = dict(enumerate(class_weights))
-
+class_weights = class_weight.compute_class_weight('balanced', classes=np.unique(y_train), y=y_train)
+class_weights_dict = dict(enumerate(class_weights))
+'''
 import pandas as pd
 
 # Assuming 'df' is your DataFrame and it contains a column 'class_label' with values 0 and 1
@@ -52,6 +52,7 @@ horror_df = df_upsampled
 
 # Display new class counts
 print(horror_df['is_horror'].value_counts())
+'''
 # %%
 oov_token = "<OOV>"
 tokenizer = Tokenizer(oov_token=oov_token)
@@ -118,7 +119,7 @@ optimizer = Adam(learning_rate=0.001)
 
 model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['acc'])
 
-history = model.fit(training_data, epochs=epochs, verbose=1, validation_data=validation_data, callbacks=[callback])
+history = model.fit(training_data, epochs=epochs, verbose=1, validation_data=validation_data, class_weight={0: 1, 1: 4}, callbacks=[callback])
 
 # %%
 loss, accuracy = model.evaluate(training_data)
@@ -228,8 +229,8 @@ TICK = u'\u2713'
 CROSS = u'\u2717'
 
 for idx in example_indices:
-    movie_title = final_df.loc[X_test.index[idx], 'names']
-    actual_genre_id = final_df.loc[X_test.index[idx], 'genre_id']
+    movie_title = horror_df.loc[X_test.index[idx], 'names']
+    actual_genre_id = horror_df.loc[X_test.index[idx], 'is_horror']
     predicted_genre_id = y_pred[idx]
 
     # Assuming that genre_id 1 is for Horror and 0 for Not Horror
