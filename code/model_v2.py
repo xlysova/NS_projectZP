@@ -95,7 +95,7 @@ validation_data = tf.data.Dataset.from_tensor_slices((X_test_padded, y_test))
 batch_size = 64
 training_data = training_data.batch(batch_size)
 validation_data = validation_data.batch(batch_size)
-epochs = 16
+epochs = 5
 callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=3)
 vocab_size = len(tokenizer.word_index) + 1
 
